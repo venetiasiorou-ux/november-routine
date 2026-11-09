@@ -18,19 +18,36 @@ nav{position:fixed;bottom:0;left:0;right:0;background:rgba(14,16,20,.95);backdro
 .sheet h2{margin:0 0 14px}.sheet label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}.sheet input,.sheet textarea,.sheet select{width:100%;padding:13px;border-radius:12px;border:1px solid var(--line);background:#0e1014;color:var(--text);font-size:16px}.sheet textarea{min-height:90px;resize:vertical}
 .actions{display:flex;gap:8px;margin-top:18px}.actions button{flex:1}.danger{color:#ff9b9b;border-color:#6a3434}
 
-.monthnav{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:14px 0}.monthnav button{flex:1}.modebar{display:flex;gap:8px;margin:12px 0}.modebar button{flex:1}.selected{border-color:#8fb3ff;background:#26344d}.goals{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.goal{background:var(--card);border-radius:14px;padding:12px}.goal .bar{margin-top:7px}.goal .fill{background:#8fb3ff}.goal strong{font-size:14px}.goal .small{margin-top:5px}.templateHint{padding:12px;border:1px solid var(--line);border-radius:14px;color:var(--muted);font-size:13px}.weeknav{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0}.weeknav button{flex:1;min-width:40px;padding:10px 5px}.utility{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}.utility button{flex:1;font-size:13px;padding:9px}.empty{padding:24px;text-align:center;color:var(--muted)}nav{position:static;margin:20px -16px -20px;padding:12px 16px calc(18px + env(safe-area-inset-bottom));flex-wrap:wrap}nav button{min-width:115px}main{padding-bottom:40px}
-</style></head><body><main>
+.mainTabs{position:sticky;top:0;z-index:10;background:var(--bg);padding:8px 0}.monthnav{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:14px 0}.monthnav button{flex:1}.modebar{display:flex;gap:8px;margin:12px 0}.modebar button{flex:1}.selected{border-color:#8fb3ff;background:#26344d}.goals{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.goal{background:var(--card);border-radius:14px;padding:12px}.goal .bar{margin-top:7px}.goal .fill{background:#8fb3ff}.goal strong{font-size:14px}.goal .small{margin-top:5px}.templateHint{padding:12px;border:1px solid var(--line);border-radius:14px;color:var(--muted);font-size:13px}.weeknav{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0}.weeknav button{flex:1;min-width:40px;padding:10px 5px}.utility{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}.utility button{flex:1;font-size:13px;padding:9px}.empty{padding:24px;text-align:center;color:var(--muted)}nav{position:static;margin:20px -16px -20px;padding:12px 16px calc(18px + env(safe-area-inset-bottom));flex-wrap:wrap}nav button{min-width:115px}main{padding-bottom:40px}
+.bottomMenu{position:fixed;bottom:0;left:0;right:0;z-index:30;display:flex;justify-content:center;gap:4px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(19,22,29,.96);backdrop-filter:blur(16px);border-top:1px solid var(--line)}.bottomMenu button{flex:1;max-width:170px;border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 3px;font-size:11px;border-radius:13px}.bottomMenu button.selected{color:var(--accent);background:#253149}.menuIcon{font-size:23px;line-height:1}.dataActions{display:flex;flex-direction:column;gap:10px;margin-top:20px}.dataActions button{width:100%;display:flex;align-items:center;text-align:left;gap:15px;padding:16px;background:var(--card);border-radius:17px}.dataActions button>span:first-child{font-size:25px;color:var(--accent);width:27px;text-align:center}.dataActions button>span:nth-child(2){flex:1;display:flex;flex-direction:column;gap:5px}.dataActions small{font-size:12px;color:var(--muted)}.dataActions button>span:last-child{font-size:22px;color:var(--muted)}.dayActions{display:flex;gap:8px;margin:18px 0}.dayActions button{flex:1;font-size:13px}.monthnav{justify-content:center}main{padding-bottom:calc(105px + env(safe-area-inset-bottom))}</style></head><body><main>
 <h1>Routine</h1><div class="sub">Το πρόγραμμά μου · Νοέμβριος 2026</div>
 <div class="monthnav"><strong id="monthName">Νοέμβριος 2026</strong></div>
-<div class="progress"><strong id="monthText">Μηνιαία πρόοδος</strong><div class="bar"><div class="fill" id="monthFill"></div></div><div class="small" id="monthStats"></div></div>
-<div class="goals" id="goals"></div><button class="addBtn" onclick="addGoal()">＋ Νέος μηνιαίος στόχος</button><div class="small">Ο στόχος μετρά τις ολοκληρωμένες δραστηριότητες με τον ίδιο τίτλο μέσα στον Νοέμβριο. Πάτησε ✎ για αλλαγή ή διαγραφή στόχου.</div>
-<div class="modebar"><button id="dailyMode" onclick="setMode('daily')">Ημερήσιο πρόγραμμα</button><button id="templateMode" onclick="setMode('template')">Πρότυπο εβδομάδας</button></div>
+
+<section id="progressPage" style="display:none"><div class="progress"><strong id="monthText">Μηνιαία πρόοδος</strong><div class="bar"><div class="fill" id="monthFill"></div></div><div class="small" id="monthStats"></div></div>
+<div class="goals" id="goals"></div><button class="addBtn" onclick="addGoal()">＋ Νέος μηνιαίος στόχος</button><div class="small">Όρισε πόσες φορές θέλεις να κάνεις κάθε δραστηριότητα τον Νοέμβριο. Το ✓ μετρά μία ολοκλήρωση. Πάτησε ✎ για επεξεργασία.</div></section>
+<section id="schedulePage">
 <div id="dailyNav" class="top"><button onclick="move(-1)">←</button><button class="today" onclick="goToday()">Σήμερα</button><button onclick="move(1)">→</button></div>
 <div id="weekNav" class="weeknav" style="display:none"></div>
 <div id="hint"></div><div id="content"></div>
-<div class="utility"><button onclick="inspectStorage()">Έλεγχος δεδομένων</button><button onclick="exportData()">Εξαγωγή backup</button><button onclick="document.getElementById('importFile').click()">Εισαγωγή backup</button><input id="importFile" type="file" accept="application/json,.json" style="display:none" onchange="importData(event)"></div>
-<nav><button id="clearBtn" onclick="clearChecks()">Καθαρισμός ✓ ημέρας</button><button id="restoreBtn" onclick="restoreDay()">Επαναφορά ημέρας</button></nav>
+</section><section id="dataPage" style="display:none">
+<h2>Δεδομένα</h2>
+<p class="small">Διαχείριση των δεδομένων που είναι αποθηκευμένα σε αυτή τη συσκευή. Το GitHub δεν αποθηκεύει τις δραστηριότητές σου.</p>
+<div class="dataActions">
+<button onclick="inspectStorage()"><span>⌕</span><span><strong>Έλεγχος δεδομένων</strong><small>Δες τι έχει αποθηκευτεί στον browser</small></span><span>›</span></button>
+<button onclick="exportData()"><span>↓</span><span><strong>Εξαγωγή backup</strong><small>Αποθήκευσε αντίγραφο των δραστηριοτήτων και στόχων</small></span><span>›</span></button>
+<button onclick="document.getElementById('importFile').click()"><span>↑</span><span><strong>Εισαγωγή backup</strong><small>Επαναφορά από αρχείο JSON</small></span><span>›</span></button>
+<input id="importFile" type="file" accept="application/json,.json" style="display:none" onchange="importData(event)">
+</div>
+</section>
+<div class="dayActions" id="dayActions"><button id="clearBtn" onclick="clearChecks()">Καθαρισμός ✓ ημέρας</button><button id="restoreBtn" onclick="restoreDay()">Επαναφορά ημέρας</button></div>
 </main>
+<div class="bottomMenu">
+<button id="scheduleTab" onclick="setPage('schedule')"><span class="menuIcon">▦</span><span>Πρόγραμμα</span></button>
+<button id="templateTab" onclick="setPage('template')"><span class="menuIcon">▤</span><span>Εβδομάδα</span></button>
+<button id="progressTab" onclick="setPage('progress')"><span class="menuIcon">◉</span><span>Στόχοι</span></button>
+<button id="dataTab" onclick="setPage('data')"><span class="menuIcon">☷</span><span>Δεδομένα</span></button>
+</div>
+
 <div class="modal" id="modal" onclick="backdrop(event)"><div class="sheet">
 <h2 id="modalTitle">Δραστηριότητα</h2>
 <label>Ώρα</label><input id="editTime" placeholder="π.χ. 14:00–14:30">
@@ -60,9 +77,10 @@ const WEEKORDER=[1,2,3,4,5,6,0];
 const el=id=>document.getElementById(id);
 let today=new Date(),month=10;
 let day=(today.getFullYear()===YEAR&&today.getMonth()===10)?today.getDate():1,weekday=1,mode="daily",editing=null;
+let page="schedule";
 let db=loadDB();
 migrateLegacy();
-function loadDB(){try{let x=JSON.parse(localStorage.getItem(STORE)||"null");if(x&&x.version===1&&x.dates){if(!x.templates)x.templates={};if(!Array.isArray(x.goals))x.goals=[];return x}}catch(e){}return {version:1,dates:{},templates:{},goals:[]}}
+function loadDB(){try{let x=JSON.parse(localStorage.getItem(STORE)||"null");if(x&&x.version===1&&x.dates){if(!x.templates)x.templates={};if(!Array.isArray(x.goals))x.goals=[];x.goals=x.goals.map(g=>typeof g==="string"?{name:g,target:0}:g).filter(g=>g&&typeof g.name==="string");return x}}catch(e){}return {version:1,dates:{},templates:{},goals:[]}}
 function saveDB(){localStorage.setItem(STORE,JSON.stringify(db))}
 function key(d,m=month){return `${YEAR}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`}
 function templateKey(m=month){return `${YEAR}-${String(m+1).padStart(2,"0")}`}
@@ -97,16 +115,27 @@ function migrateLegacy(){
  }catch(e){}
  localStorage.setItem("routine.migrationDone","1");
 }
+function setPage(v){page=v;mode=v==="template"?"template":"daily";render();window.scrollTo(0,0)}
 function setMode(v){mode=v;render()}
 
 function move(n){let d=day+n,max=new Date(YEAR,month+1,0).getDate();if(d>=1&&d<=max)day=d;render()}
 function goToday(){let d=new Date();if(d.getFullYear()===YEAR&&d.getMonth()===10){day=d.getDate()}render()}
 function render(){
+ el("schedulePage").style.display=(page==="schedule"||page==="template")?"block":"none";
+ el("dataPage").style.display=page==="data"?"block":"none";
+ el("dayActions").style.display=(page==="schedule"||page==="template")?"flex":"none";
+ el("progressPage").style.display=page==="progress"?"block":"none";
+ el("scheduleTab").classList.toggle("selected",page==="schedule");
+ el("templateTab").classList.toggle("selected",page==="template");
+ el("dataTab").classList.toggle("selected",page==="data");
+ el("progressTab").classList.toggle("selected",page==="progress");
+ el("clearBtn").style.display=page==="schedule"?"":"none";
+ el("restoreBtn").style.display=(page==="schedule"||page==="template")?"":"none";
  el("monthName").textContent=MONTHS[month]+" "+YEAR;
- el("dailyMode").classList.toggle("selected",mode==="daily");el("templateMode").classList.toggle("selected",mode==="template");
+ 
  el("dailyNav").style.display=mode==="daily"?"flex":"none";
  el("weekNav").style.display=mode==="template"?"flex":"none";
- el("clearBtn").style.display=mode==="daily"?"":"none";
+ el("clearBtn").style.display=page==="schedule"?"":"none";
  el("restoreBtn").textContent=mode==="daily"?"Επαναφορά ημέρας":"Επαναφορά προτύπου";
  if(mode==="template"){
   el("weekNav").innerHTML=SHORT.map((x,i)=>`<button class="${weekday===WEEKORDER[i]?"selected":""}" onclick="weekday=${WEEKORDER[i]};render()">${x}</button>`).join("");
@@ -154,34 +183,48 @@ function restoreDay(){
 }
 
 function normalized(s){return String(s||"").trim().toLocaleLowerCase("el").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/\\s+/g," ")}
+
+function askTarget(defaultValue){
+ let raw=prompt("Πόσες φορές θέλεις να το κάνεις μέσα στον Νοέμβριο;",String(defaultValue||""));
+ if(raw===null)return null;
+ raw=raw.trim();
+ if(!/^[1-9]\d*$/.test(raw)||Number(raw)>999){alert("Βάλε ακέραιο αριθμό από 1 έως 999.");return null}
+ return Number(raw);
+}
 function addGoal(){
- let name=prompt("Τίτλος στόχου (ίδιος με τον τίτλο δραστηριότητας, π.χ. Μπάσο):");
+ let name=prompt("Όνομα μηνιαίου στόχου (π.χ. Μπάσο):");
  if(name===null)return;name=name.trim();if(!name)return;
- if(db.goals.some(g=>normalized(g)===normalized(name))){alert("Ο στόχος υπάρχει ήδη.");return}
- db.goals.push(name);saveDB();render();
+ if(db.goals.some(g=>normalized(g.name)===normalized(name))){alert("Ο στόχος υπάρχει ήδη.");return}
+ let target=askTarget(8);if(target===null)return;
+ db.goals.push({name,target});saveDB();render();
 }
 function editGoal(i){
- let old=db.goals[i],name=prompt("Άλλαξε τον τίτλο ή άφησε κενό για διαγραφή:",old);
- if(name===null)return;
- name=name.trim();
- if(!name){if(confirm("Να διαγραφεί ο μηνιαίος στόχος «"+old+"»; Οι δραστηριότητες δεν θα διαγραφούν.")){db.goals.splice(i,1);saveDB();render()}return}
- if(db.goals.some((g,j)=>j!==i&&normalized(g)===normalized(name))){alert("Ο στόχος υπάρχει ήδη.");return}
- db.goals[i]=name;saveDB();render();
+ let old=db.goals[i];
+ let name=prompt("Άλλαξε τον τίτλο ή άφησε κενό για διαγραφή:",old.name);
+ if(name===null)return;name=name.trim();
+ if(!name){
+  if(confirm("Να διαγραφεί ο μηνιαίος στόχος «"+old.name+"»; Οι δραστηριότητες θα παραμείνουν.")){db.goals.splice(i,1);saveDB();render()}
+  return;
+ }
+ if(db.goals.some((g,j)=>j!==i&&normalized(g.name)===normalized(name))){alert("Ο στόχος υπάρχει ήδη.");return}
+ let target=askTarget(old.target||8);if(target===null)return;
+ db.goals[i]={name,target};saveDB();render();
 }
 function updateMonth(){
- let total=0,done=0,counts=db.goals.map(()=>({total:0,done:0}));
- let days=30;
- for(let d=1;d<=days;d++)for(const x of currentTasks(d)){
+ let total=0,done=0,counts=db.goals.map(()=>({done:0}));
+ for(let d=1;d<=30;d++)for(const x of currentTasks(d)){
   total++;if(x.done)done++;
-  db.goals.forEach((name,i)=>{if(normalized(x.label)===normalized(name)){counts[i].total++;if(x.done)counts[i].done++}});
+  if(x.done)db.goals.forEach((g,i)=>{if(normalized(x.label)===normalized(g.name))counts[i].done++});
  }
  let p=total?Math.round(done/total*100):0;
  el("monthText").textContent=`Μηνιαία πρόοδος · ${p}%`;
  el("monthFill").style.width=p+"%";
  el("monthStats").textContent=`${done} από ${total} δραστηριότητες`;
- el("goals").innerHTML=db.goals.map((name,i)=>{
-  let c=counts[i],p=c.total?Math.round(c.done/c.total*100):0;
-  return `<div class="goal"><div style="display:flex;justify-content:space-between;gap:5px;align-items:center"><strong>${esc(name)}</strong><button style="padding:4px 7px" onclick="editGoal(${i})">✎</button></div><div class="bar"><div class="fill" style="width:${p}%"></div></div><div class="small">${c.done}/${c.total} · ${p}%</div></div>`;
+ el("goals").innerHTML=db.goals.map((g,i)=>{
+  let c=counts[i],target=Number(g.target)||0;
+  let percent=target?Math.round(c.done/target*100):0;
+  let width=Math.min(percent,100);
+  return `<div class="goal"><div style="display:flex;justify-content:space-between;gap:5px;align-items:center"><strong>${esc(g.name)}</strong><button style="padding:4px 7px" onclick="editGoal(${i})">✎</button></div><div class="bar"><div class="fill" style="width:${width}%"></div></div><div class="small">${c.done}/${target||"—"} φορές · ${percent}%${target&&c.done>=target?" · Στόχος επιτεύχθηκε":""}</div></div>`;
  }).join("");
 }
 function inspectStorage(){
@@ -202,7 +245,7 @@ async function importData(event){
   let obj=JSON.parse(await file.text());
   if(obj.version!==1||!obj.dates||typeof obj.dates!=="object")throw Error("Μη έγκυρο αρχείο.");
   if(!confirm("Η εισαγωγή θα αντικαταστήσει τα δεδομένα της εφαρμογής σε αυτή τη συσκευή. Έχεις κρατήσει backup;"))return;
-  db={...obj,templates:obj.templates||{},goals:obj.goals||[]};saveDB();render();alert("Η εισαγωγή ολοκληρώθηκε.");
+  db={...obj,templates:obj.templates||{},goals:(obj.goals||[]).map(g=>typeof g==="string"?{name:g,target:0}:g)};saveDB();render();alert("Η εισαγωγή ολοκληρώθηκε.");
  }catch(e){alert("Αποτυχία εισαγωγής: "+e.message)}
 }
 render();
