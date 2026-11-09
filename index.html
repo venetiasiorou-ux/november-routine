@@ -79,9 +79,9 @@ let today=new Date(),month=10;
 let day=(today.getFullYear()===YEAR&&today.getMonth()===10)?today.getDate():1,weekday=1,mode="daily",editing=null;
 let page="schedule";
 let db=loadDB();
-migrateLegacy();
-function loadDB(){try{let x=JSON.parse(localStorage.getItem(STORE)||"null");if(x&&x.version===1&&x.dates){if(!x.templates)x.templates={};if(!Array.isArray(x.goals))x.goals=[];x.goals=x.goals.map(g=>typeof g==="string"?{name:g,target:0}:g).filter(g=>g&&typeof g.name==="string");return x}}catch(e){}return {version:1,dates:{},templates:{},goals:[]}}
-function saveDB(){localStorage.setItem(STORE,JSON.stringify(db))}
+try{migrateLegacy()}catch(err){console.warn("Legacy migration skipped",err)}
+function loadDB(){try{let x=JSON.parse(safeGet(STORE)||"null");if(x&&x.version===1&&x.dates){if(!x.templates)x.templates={};if(!Array.isArray(x.goals))x.goals=[];x.goals=x.goals.map(g=>typeof g==="string"?{name:g,target:0}:g).filter(g=>g&&typeof g.name==="string");return x}}catch(e){}return {version:1,dates:{},templates:{},goals:[]}}
+function saveDB(){try{localStorage.setItem(STORE,JSON.stringify(db))}catch(err){alert("Η αποθήκευση δεν είναι διαθέσιμη σε αυτή την έκδοση του iPhone. Άνοιξε την εφαρμογή στο Safari για να μη χαθούν οι αλλαγές.");console.error(err)}}
 function key(d,m=month){return `${YEAR}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`}
 function templateKey(m=month){return `${YEAR}-${String(m+1).padStart(2,"0")}`}
 function uid(){return "u"+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
@@ -97,11 +97,12 @@ function editTemplate(){let k=templateKey();if(!db.templates[k])db.templates[k]=
 function startMinutes(t){let m=String(t).match(/(\d{1,2}):(\d{2})/);if(!m)return 9999;let v=+m[1]*60+ +m[2];if(v<360)v+=1440;return v}
 function sortTasks(a){a.sort((x,y)=>startMinutes(x.time)-startMinutes(y.time))}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function migrateLegacy(){
- if(localStorage.getItem("routine.migrationDone")==="1")return;
+ if(safeGet("routine.migrationDone")==="1")return;
  try{
-  let oldCustom=JSON.parse(localStorage.getItem("octoberRoutine2026.v4.custom")||localStorage.getItem("octoberRoutine2026.custom")||"{}");
-  let oldTicks=JSON.parse(localStorage.getItem("octoberRoutine2026.v4.ticks")||localStorage.getItem("octoberRoutine2026")||"{}");
+  let oldCustom=JSON.parse(safeGet("octoberRoutine2026.v4.custom")||safeGet("octoberRoutine2026.custom")||"{}");
+  let oldTicks=JSON.parse(safeGet("octoberRoutine2026.v4.ticks")||safeGet("octoberRoutine2026")||"{}");
   let changed=false;
   for(let d=1;d<=31;d++){
    if(db.dates[key(d,9)])continue;
@@ -113,9 +114,9 @@ function migrateLegacy(){
   }
   if(changed)saveDB();
  }catch(e){}
- localStorage.setItem("routine.migrationDone","1");
+ try{localStorage.setItem("routine.migrationDone","1")}catch(e){console.warn(e)}
 }
-function setPage(v){page=v;mode=v==="template"?"template":"daily";render();window.scrollTo(0,0)}
+function setPage(v){page=v;mode=v==="template"?"template":"daily";render();try{window.scrollTo({top:0,behavior:"instant"})}catch(e){}}
 function setMode(v){mode=v;render()}
 
 function move(n){let d=day+n,max=new Date(YEAR,month+1,0).getDate();if(d>=1&&d<=max)day=d;render()}
@@ -230,7 +231,8 @@ function updateMonth(){
 function inspectStorage(){
  const wanted=["october_2026_daily_checklist_v1","octoberRoutine2026","octoberRoutine2026.custom","octoberRoutine2026.v4.ticks","octoberRoutine2026.v4.custom","routine.userData","routine.migrationDone"];
  let found=[];
- for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);if(wanted.includes(k)||/routine|october/i.test(k)){let v=localStorage.getItem(k)||"";found.push(k+" ("+v.length+" χαρακτήρες)")}}
+ let length=0;try{length=localStorage.length}catch(e){alert("Το iPhone δεν επιτρέπει πρόσβαση στα τοπικά δεδομένα.");return}
+ for(let i=0;i<length;i++){let k=localStorage.key(i);if(wanted.includes(k)||/routine|october/i.test(k)){let v=safeGet(k)||"";found.push(k+" ("+v.length+" χαρακτήρες)")}}
  alert(found.length?"Βρέθηκαν:\n\n"+found.join("\n")+"\n\nΣτείλε screenshot.":"Δεν βρέθηκαν δεδομένα Routine/October σε αυτό το storage.");
 }
 function exportData(){
@@ -248,5 +250,10 @@ async function importData(event){
   db={...obj,templates:obj.templates||{},goals:(obj.goals||[]).map(g=>typeof g==="string"?{name:g,target:0}:g)};saveDB();render();alert("Η εισαγωγή ολοκληρώθηκε.");
  }catch(e){alert("Αποτυχία εισαγωγής: "+e.message)}
 }
-render();
+try{render()}catch(err){
+ console.error(err);
+ const b=document.createElement("div");b.style="padding:16px;margin:15px;background:#48272b;color:white;border-radius:12px";
+ b.textContent="Σφάλμα εκκίνησης: "+err.message+". Στείλε μου screenshot.";
+ document.body.prepend(b);
+}
 </script></body></html>
