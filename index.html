@@ -19,7 +19,14 @@ nav{position:fixed;bottom:0;left:0;right:0;background:rgba(14,16,20,.95);backdro
 .actions{display:flex;gap:8px;margin-top:18px}.actions button{flex:1}.danger{color:#ff9b9b;border-color:#6a3434}
 
 .mainTabs{position:sticky;top:0;z-index:10;background:var(--bg);padding:8px 0}.monthnav{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:14px 0}.monthnav button{flex:1}.modebar{display:flex;gap:8px;margin:12px 0}.modebar button{flex:1}.selected{border-color:#8fb3ff;background:#26344d}.goals{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.goal{background:var(--card);border-radius:14px;padding:12px}.goal .bar{margin-top:7px}.goal .fill{background:#8fb3ff}.goal strong{font-size:14px}.goal .small{margin-top:5px}.templateHint{padding:12px;border:1px solid var(--line);border-radius:14px;color:var(--muted);font-size:13px}.weeknav{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0}.weeknav button{flex:1;min-width:40px;padding:10px 5px}.utility{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}.utility button{flex:1;font-size:13px;padding:9px}.empty{padding:24px;text-align:center;color:var(--muted)}nav{position:static;margin:20px -16px -20px;padding:12px 16px calc(18px + env(safe-area-inset-bottom));flex-wrap:wrap}nav button{min-width:115px}main{padding-bottom:40px}
-.bottomMenu{position:fixed;bottom:0;left:0;right:0;z-index:30;display:flex;justify-content:center;gap:4px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(19,22,29,.96);backdrop-filter:blur(16px);border-top:1px solid var(--line)}.bottomMenu button{flex:1;max-width:170px;border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 3px;font-size:11px;border-radius:13px}.bottomMenu button.selected{color:var(--accent);background:#253149}.menuIcon{font-size:23px;line-height:1}.dataActions{display:flex;flex-direction:column;gap:10px;margin-top:20px}.dataActions button{width:100%;display:flex;align-items:center;text-align:left;gap:15px;padding:16px;background:var(--card);border-radius:17px}.dataActions button>span:first-child{font-size:25px;color:var(--accent);width:27px;text-align:center}.dataActions button>span:nth-child(2){flex:1;display:flex;flex-direction:column;gap:5px}.dataActions small{font-size:12px;color:var(--muted)}.dataActions button>span:last-child{font-size:22px;color:var(--muted)}.dayActions{display:flex;gap:8px;margin:18px 0}.dayActions button{flex:1;font-size:13px}.monthnav{justify-content:center}main{padding-bottom:calc(105px + env(safe-area-inset-bottom))}</style></head><body><main>
+.bottomMenu{position:fixed;bottom:0;left:0;right:0;z-index:30;display:flex;justify-content:center;gap:4px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(19,22,29,.96);backdrop-filter:blur(16px);border-top:1px solid var(--line)}.bottomMenu button{flex:1;max-width:170px;border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 3px;font-size:11px;border-radius:13px}.bottomMenu button.selected{color:var(--accent);background:#253149}.menuIcon{font-size:23px;line-height:1}.dataActions{display:flex;flex-direction:column;gap:10px;margin-top:20px}.dataActions button{width:100%;display:flex;align-items:center;text-align:left;gap:15px;padding:16px;background:var(--card);border-radius:17px}.dataActions button>span:first-child{font-size:25px;color:var(--accent);width:27px;text-align:center}.dataActions button>span:nth-child(2){flex:1;display:flex;flex-direction:column;gap:5px}.dataActions small{font-size:12px;color:var(--muted)}.dataActions button>span:last-child{font-size:22px;color:var(--muted)}.dayActions{display:flex;gap:8px;margin:18px 0}.dayActions button{flex:1;font-size:13px}.monthnav{justify-content:center}main{padding-bottom:calc(105px + env(safe-area-inset-bottom))}
+/* iOS standalone: keep the editor in the visual viewport when keyboard opens. */
+.modal.show{align-items:stretch;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.modal .sheet{margin:auto auto 0;max-height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+.modal.keyboard-open{height:var(--keyboard-viewport-height,100dvh);bottom:auto;align-items:flex-start}
+.modal.keyboard-open .sheet{margin:0 auto;min-height:100%;max-height:none;border-radius:0;padding-bottom:110px}
+.modal input,.modal textarea,.modal select{font-size:16px;touch-action:manipulation}
+</style></head><body><main>
 <h1>Routine</h1><div class="sub">Το πρόγραμμά μου · Νοέμβριος 2026</div>
 <div class="monthnav"><strong id="monthName">Νοέμβριος 2026</strong></div>
 
@@ -152,9 +159,28 @@ function render(){
 }
 function setDone(id,v){let a=materialize(),x=a.find(x=>x.id===id);if(x)x.done=v;saveDB();render()}
 function toggleNotes(id){let n=el("note-"+id);if(n)n.classList.toggle("show")}
+// iOS standalone keyboard handling. Do not re-render the editor while typing.
+(function setupKeyboardViewport(){
+ const modal=el("modal");
+ function syncViewport(){
+  const vv=window.visualViewport;
+  if(!vv)return;
+  const keyboardOpen=modal.classList.contains("show") && vv.height < window.innerHeight-100;
+  modal.classList.toggle("keyboard-open",keyboardOpen);
+  modal.style.setProperty("--keyboard-viewport-height",vv.height+"px");
+  if(keyboardOpen)modal.style.top=vv.offsetTop+"px";
+  else modal.style.top="";
+ }
+ if(window.visualViewport){window.visualViewport.addEventListener("resize",syncViewport);window.visualViewport.addEventListener("scroll",syncViewport)}
+ modal.addEventListener("focusin",e=>{
+  if(!e.target.matches("input,textarea,select"))return;
+  requestAnimationFrame(()=>{syncViewport();e.target.scrollIntoView({block:"center",behavior:"instant"})});
+ });
+ modal.addEventListener("focusout",()=>requestAnimationFrame(syncViewport));
+})();
 function openEdit(id){editing=id;let x=(mode==="template"?templateTasks():currentTasks(day)).find(x=>x.id===id);if(!x)return;el("modalTitle").textContent="Επεξεργασία δραστηριότητας";el("editTime").value=x.time;el("editLabel").value=x.label;el("editCat").value=x.cat||"event";el("editNotes").value=x.notes||"";el("deleteBtn").style.display="block";el("modal").classList.add("show")}
 function openAdd(){editing=null;el("modalTitle").textContent="Νέα δραστηριότητα";el("editTime").value="";el("editLabel").value="";el("editCat").value="event";el("editNotes").value="";el("deleteBtn").style.display="none";el("modal").classList.add("show")}
-function closeModal(){el("modal").classList.remove("show")}
+function closeModal(){const m=el("modal");m.classList.remove("show","keyboard-open");m.style.top="";document.activeElement?.blur?.()}
 function backdrop(e){if(e.target.id==="modal")closeModal()}
 function saveTask(){
  let time=el("editTime").value.trim(),label=el("editLabel").value.trim();
